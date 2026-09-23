@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Teacher Dashboard - Student Doubt System</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+</head>
+
+
+<body>
+
+
+    <nav class="dashboard-navbar">
+
+        <div class="dashboard-logo">
+
+            <span>SD</span>
+
+            Student Doubt System
+
+        </div>
+
+
+        <div class="dashboard-user">
+
+            <span id="teacherName">
+                Teacher
+            </span>
+
+            <a href="index.html" id="teacherLogout">
+                Logout
+            </a>
+
+        </div>
+
+    </nav>
+
+
+
+    <main class="dashboard-container">
+
+
+        <section class="dashboard-welcome">
+
+            <div>
+
+                <h1>
+                    Teacher Dashboard 👨‍🏫
+                </h1>
+
+                <p id="teacherSubjectText">
+                    View and manage student doubts.
+                </p>
+
+            </div>
+
+        </section>
+
+
+
+        <section class="dashboard-stats">
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+                    ?
+                </div>
+
+                <div>
+
+                    <h3 id="teacherTotalDoubts">
+                        0
+                    </h3>
+
+                    <p>
+                        Total Doubts
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+                    ⏳
+                </div>
+
+                <div>
+
+                    <h3 id="teacherPendingDoubts">
+                        0
+                    </h3>
+
+                    <p>
+                        Pending
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+                    ✓
+                </div>
+
+                <div>
+
+                    <h3 id="teacherAnsweredDoubts">
+                        0
+                    </h3>
+
+                    <p>
+                        Answered
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <section class="dashboard-card">
+
+
+            <div class="card-heading">
+
+                <div>
+
+                    <h2>
+                        Student Doubts
+                    </h2>
+
+                    <p>
+                        Only doubts related to your teaching subject are shown.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div id="teacherDoubtsList"></div>
+
+
+        </section>
+
+    </main>
+
+
+
+    <footer class="dashboard-footer">
+
+        <p>
+            © 2026 Student Doubt Management System
+        </p>
+
+    </footer>
+
+
+
+    <script>
+
+
+        /* =========================================
+           GET LOGGED-IN TEACHER
+        ========================================= */
+
+        const loggedInTeacher =
+            JSON.parse(
+                localStorage.getItem("sdLoggedInUser")
+            );
+
+
+
+        /* =========================================
+           CHECK LOGIN
+        ========================================= */
+
+        if (!loggedInTeacher) {
+
+            alert("Please login first.");
+
+            window.location.href =
+                "login.html";
+
+        }
+
+
+
+        if (
+            loggedInTeacher &&
+            loggedInTeacher.role !== "teacher"
+        ) {
+
+            alert("Teacher access required.");
+
+            window.location.href =
+                "student-dashboard.html";
+
+        }
+
+
+
+        if (loggedInTeacher) {
+
+
+            /* =========================================
+               TEACHER INFORMATION
+            ========================================= */
+
+            document.getElementById(
+                "teacherName"
+            ).textContent =
+                loggedInTeacher.name;
+
+
+            document.getElementById(
+                "teacherSubjectText"
+            ).textContent =
+                "Teaching Subject: " +
+                loggedInTeacher.subject;
+
+
+
+            /* =========================================
+               GET ALL DOUBTS
+            ========================================= */
+
+            let allDoubts =
+                JSON.parse(
+                    localStorage.getItem("sdDoubts")
+                ) || [];
+
+
+
+            /* =========================================
+               FILTER BY TEACHER SUBJECT
+            ========================================= */
+
+            const teacherDoubts =
+                allDoubts.filter(
+                    function(doubt) {
+
+                        return (
+                            doubt.subject ===
+                            loggedInTeacher.subject
+                        );
+
+                    }
+                );
+
+
+
+            /* =========================================
+               STATISTICS
+            ========================================= */
+
+            const totalDoubts =
+                teacherDoubts.length;
+
+
+            const pendingDoubts =
+                teacherDoubts.filter(
+                    function(doubt) {
+
+                        return doubt.status === "Pending";
+
+                    }
+                ).length;
+
+
+            const answeredDoubts =
+                teacherDoubts.filter(
+                    function(doubt) {
+
+                        return doubt.status === "Answered";
+
+                    }
+                ).length;
+
+
+
+            document.getElementById(
+                "teacherTotalDoubts"
+            ).textContent =
+                totalDoubts;
+
+
+            document.getElementById(
+                "teacherPendingDoubts"
+            ).textContent =
+                pendingDoubts;
+
+
+            document.getElementById(
+                "teacherAnsweredDoubts"
+            ).textContent =
+                answeredDoubts;
+
+
+
+            /* =========================================
+               DOUBT LIST
+            ========================================= */
+
+            const teacherDoubtsList =
+                document.getElementById(
+                    "teacherDoubtsList"
+                );
+
+
+
+            if (teacherDoubts.length === 0) {
+
+
+                teacherDoubtsList.innerHTML = `
+
+                    <div class="doubt-item">
+
+                        <div class="doubt-info">
+
+                            <h3>
+                                No doubts for your subject
+                            </h3>
+
+                            <p>
+                                Student doubts related to
+                                ${loggedInTeacher.subject}
+                                will appear here.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                `;
+
+            }
+
+
+            else {
+
+
+                const latestDoubts =
+                    teacherDoubts
+                    .slice()
+                    .reverse();
+
+
+
+                latestDoubts.forEach(
+                    function(doubt) {
+
+
+                        let statusClass =
+                            "pending";
+
+
+                        if (
+                            doubt.status ===
+                            "Answered"
+                        ) {
+
+                            statusClass =
+                                "answered";
+
+                        }
+
+
+
+                        let studentName =
+                            doubt.studentName;
+
+
+                        if (doubt.anonymous) {
+
+                            studentName =
+                                "Anonymous Student";
+
+                        }
+
+
+
+                        /* =========================================
+                           ANSWERED DOUBT
+                        ========================================= */
+
+                        if (
+                            doubt.status ===
+                            "Answered"
+                        ) {
+
+
+                            teacherDoubtsList.innerHTML += `
+
+                                <div
+                                    class="doubt-item"
+                                    style="
+                                        display: block;
+                                        padding: 20px 0;
+                                    "
+                                >
+
+                                    <div
+                                        style="
+                                            display: flex;
+                                            justify-content: space-between;
+                                            gap: 20px;
+                                        "
+                                    >
+
+                                        <div class="doubt-info">
+
+                                            <h3>
+                                                ${doubt.subject}
+                                            </h3>
+
+                                            <p>
+                                                ${doubt.doubt}
+                                            </p>
+
+                                            <p
+                                                style="
+                                                    margin-top: 7px;
+                                                    font-size: 12px;
+                                                "
+                                            >
+
+                                                Student:
+                                                ${studentName}
+
+                                            </p>
+
+                                        </div>
+
+
+                                        <span
+                                            class="status answered"
+                                        >
+
+                                            Answered
+
+                                        </span>
+
+                                    </div>
+
+
+                                    <div
+                                        style="
+                                            margin-top: 15px;
+                                            padding: 15px;
+                                            background-color: #f0fdf4;
+                                            border: 1px solid #bbf7d0;
+                                            border-radius: 8px;
+                                        "
+                                    >
+
+                                        <strong
+                                            style="
+                                                color: #166534;
+                                                font-size: 13px;
+                                            "
+                                        >
+
+                                            Your Answer
+
+                                        </strong>
+
+
+                                        <p
+                                            style="
+                                                margin: 7px 0 0;
+                                                color: #374151;
+                                                font-size: 14px;
+                                                line-height: 1.6;
+                                            "
+                                        >
+
+                                            ${doubt.answer}
+
+                                        </p>
+
+                                    </div>
+
+                                </div>
+
+                            `;
+
+                        }
+
+
+                        /* =========================================
+                           PENDING DOUBT
+                        ========================================= */
+
+                        else {
+
+
+                            teacherDoubtsList.innerHTML += `
+
+                                <div
+                                    class="doubt-item"
+                                    style="
+                                        display: block;
+                                        padding: 20px 0;
+                                    "
+                                >
+
+
+                                    <div
+                                        style="
+                                            display: flex;
+                                            justify-content: space-between;
+                                            gap: 20px;
+                                        "
+                                    >
+
+                                        <div class="doubt-info">
+
+                                            <h3>
+                                                ${doubt.subject}
+                                            </h3>
+
+                                            <p>
+                                                ${doubt.doubt}
+                                            </p>
+
+                                            <p
+                                                style="
+                                                    margin-top: 7px;
+                                                    font-size: 12px;
+                                                "
+                                            >
+
+                                                Student:
+                                                ${studentName}
+
+                                            </p>
+
+                                        </div>
+
+
+                                        <span
+                                            class="status pending"
+                                        >
+
+                                            Pending
+
+                                        </span>
+
+                                    </div>
+
+
+
+                                    <!-- Answer Box -->
+
+                                    <div
+                                        style="
+                                            margin-top: 15px;
+                                        "
+                                    >
+
+                                        <label
+                                            style="
+                                                display: block;
+                                                margin-bottom: 7px;
+                                                font-size: 13px;
+                                                font-weight: 600;
+                                                color: #374151;
+                                            "
+                                        >
+
+                                            Write Your Answer
+
+                                        </label>
+
+
+                                        <textarea
+                                            id="answer-${doubt.id}"
+                                            rows="4"
+                                            placeholder="Explain the answer clearly..."
+                                            style="
+                                                width: 100%;
+                                                padding: 12px;
+                                                border: 1px solid #d1d5db;
+                                                border-radius: 7px;
+                                                resize: vertical;
+                                                font-family: inherit;
+                                                box-sizing: border-box;
+                                            "
+                                        ></textarea>
+
+
+                                        <button
+                                            onclick="answerDoubt(${doubt.id})"
+                                            class="auth-button"
+                                            style="
+                                                margin-top: 10px;
+                                                width: auto;
+                                                padding: 10px 18px;
+                                            "
+                                        >
+
+                                            Submit Answer
+
+                                        </button>
+
+                                    </div>
+
+
+                                </div>
+
+                            `;
+
+                        }
+
+                    }
+                );
+
+            }
+
+        }
+
+
+
+        /* =========================================
+           ANSWER DOUBT FUNCTION
+        ========================================= */
+
+        function answerDoubt(doubtId) {
+
+
+            const answerBox =
+                document.getElementById(
+                    "answer-" + doubtId
+                );
+
+
+            const answer =
+                answerBox.value.trim();
+
+
+
+            if (answer === "") {
+
+                alert(
+                    "Please write an answer before submitting."
+                );
+
+                return;
+
+            }
+
+
+
+            let doubts =
+                JSON.parse(
+                    localStorage.getItem("sdDoubts")
+                ) || [];
+
+
+
+            const doubtIndex =
+                doubts.findIndex(
+                    function(doubt) {
+
+                        return doubt.id === doubtId;
+
+                    }
+                );
+
+
+
+            if (doubtIndex === -1) {
+
+                alert(
+                    "Doubt not found."
+                );
+
+                return;
+
+            }
+
+
+
+            /* Save answer */
+
+            doubts[doubtIndex].answer =
+                answer;
+
+
+            doubts[doubtIndex].status =
+                "Answered";
+
+
+
+            /* Update localStorage */
+
+            localStorage.setItem(
+                "sdDoubts",
+                JSON.stringify(doubts)
+            );
+
+
+
+            alert(
+                "Answer submitted successfully!"
+            );
+
+
+
+            /* Reload dashboard */
+
+            window.location.reload();
+
+        }
+
+
+
+        /* =========================================
+           LOGOUT
+        ========================================= */
+
+        document
+            .getElementById("teacherLogout")
+            .addEventListener(
+                "click",
+                function() {
+
+                    localStorage.removeItem(
+                        "sdLoggedInUser"
+                    );
+
+                }
+            );
+
+
+    </script>
+
+
+</body>
+
+</html>

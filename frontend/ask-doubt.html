@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Ask a Doubt - Student Doubt System</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+</head>
+
+<body>
+
+    <!-- Navigation -->
+
+    <nav class="dashboard-navbar">
+
+        <div class="dashboard-logo">
+
+            <span>SD</span>
+
+            Student Doubt System
+
+        </div>
+
+
+        <div class="dashboard-user">
+
+            <span id="loggedUserName">
+                Student
+            </span>
+
+            <a href="student-dashboard.html">
+                Dashboard
+            </a>
+
+        </div>
+
+    </nav>
+
+
+    <!-- Main Content -->
+
+    <main class="dashboard-container">
+
+
+        <!-- Page Heading -->
+
+        <section class="dashboard-welcome">
+
+            <div>
+
+                <h1>
+                    Ask a Doubt
+                </h1>
+
+                <p>
+                    Ask your question without hesitation. We're here to help.
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <!-- Doubt Form -->
+
+        <section class="dashboard-card doubt-form-card">
+
+            <form id="doubtForm">
+
+
+                <!-- Subject -->
+
+                <div class="form-group">
+
+                    <label for="subject">
+                        Subject
+                    </label>
+
+                    <select id="subject" required>
+
+                        <option value="">
+                            Select Subject
+                        </option>
+
+                        <option value="Data Structures">
+                            Data Structures
+                        </option>
+
+                        <option value="Database Management">
+                            Database Management
+                        </option>
+
+                        <option value="Java Programming">
+                            Java Programming
+                        </option>
+
+                        <option value="Mathematics">
+                            Mathematics
+                        </option>
+
+                        <option value="Computer Networks">
+                            Computer Networks
+                        </option>
+
+                        <option value="Other">
+                            Other
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+                <!-- Doubt -->
+
+                <div class="form-group">
+
+                    <label for="doubt">
+
+                        Your Doubt
+
+                    </label>
+
+                    <textarea
+                        id="doubt"
+                        rows="7"
+                        placeholder="Describe your doubt clearly..."
+                        required
+                    ></textarea>
+
+                </div>
+
+
+                <!-- Anonymous Option -->
+
+                <div class="anonymous-option">
+
+                    <input
+                        type="checkbox"
+                        id="anonymous"
+                    >
+
+                    <label for="anonymous">
+
+                        Ask anonymously
+
+                    </label>
+
+                </div>
+
+
+                <p class="anonymous-note">
+
+                    If you select this option, your name will not be shown to the teacher.
+
+                </p>
+
+
+                <!-- Submit -->
+
+                <button
+                    type="submit"
+                    class="auth-button"
+                >
+
+                    Submit Doubt
+
+                </button>
+
+
+            </form>
+
+        </section>
+
+    </main>
+
+
+    <footer class="dashboard-footer">
+
+        <p>
+            © 2026 Student Doubt Management System
+        </p>
+
+    </footer>
+
+
+    <script>
+
+        const loggedInUser =
+            JSON.parse(localStorage.getItem("sdLoggedInUser"));
+
+
+        if (!loggedInUser) {
+
+            alert("Please login first.");
+
+            window.location.href = "login.html";
+
+        }
+
+
+        if (loggedInUser) {
+
+            document.getElementById("loggedUserName").textContent =
+                loggedInUser.name;
+
+        }
+
+
+        const doubtForm =
+            document.getElementById("doubtForm");
+
+
+        doubtForm.addEventListener("submit", function(event) {
+
+            event.preventDefault();
+
+
+            const subject =
+                document.getElementById("subject").value;
+
+            const doubt =
+                document.getElementById("doubt").value.trim();
+
+            const anonymous =
+                document.getElementById("anonymous").checked;
+
+
+            if (!subject || !doubt) {
+
+                alert("Please fill all required fields.");
+
+                return;
+
+            }
+
+
+            const newDoubt = {
+
+                id: Date.now(),
+
+                userEmail: loggedInUser.email,
+
+                studentName: loggedInUser.name,
+
+                subject: subject,
+
+                doubt: doubt,
+
+                anonymous: anonymous,
+
+                status: "Pending"
+
+            };
+
+
+            let doubts =
+                JSON.parse(localStorage.getItem("sdDoubts")) || [];
+
+
+            doubts.push(newDoubt);
+
+
+            localStorage.setItem(
+                "sdDoubts",
+                JSON.stringify(doubts)
+            );
+
+
+            alert("Your doubt has been submitted successfully!");
+
+
+            window.location.href =
+                "student-dashboard.html";
+
+        });
+
+    </script>
+
+</body>
+
+</html>

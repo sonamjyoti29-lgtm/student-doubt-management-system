@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Student Dashboard - Student Doubt System</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+</head>
+
+
+<body>
+
+
+    <!-- =========================================
+         NAVBAR
+    ========================================== -->
+
+    <nav class="dashboard-navbar">
+
+        <div class="dashboard-logo">
+
+            <span>SD</span>
+
+            Student Doubt System
+
+        </div>
+
+
+        <div class="dashboard-user">
+
+            <span id="dashboardUserName">
+                Student
+            </span>
+
+            <a href="index.html" id="logoutLink">
+                Logout
+            </a>
+
+        </div>
+
+    </nav>
+
+
+
+    <!-- =========================================
+         MAIN DASHBOARD
+    ========================================== -->
+
+    <main class="dashboard-container">
+
+
+        <!-- Welcome Section -->
+
+        <section class="dashboard-welcome">
+
+            <div>
+
+                <h1 id="welcomeMessage">
+                    Welcome back! 👋
+                </h1>
+
+                <p id="userBranch">
+                    Ask questions, clear your doubts and keep learning.
+                </p>
+
+            </div>
+
+
+            <a href="ask-doubt.html" class="dashboard-primary-btn">
+                + Ask a Doubt
+            </a>
+
+        </section>
+
+
+
+        <!-- =========================================
+             STATISTICS
+        ========================================== -->
+
+        <section class="dashboard-stats">
+
+
+            <!-- Total Doubts -->
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+                    ?
+                </div>
+
+                <div>
+
+                    <h3 id="totalDoubts">
+                        0
+                    </h3>
+
+                    <p>
+                        Total Doubts
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- Answered -->
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+                    ✓
+                </div>
+
+                <div>
+
+                    <h3 id="answeredDoubts">
+                        0
+                    </h3>
+
+                    <p>
+                        Answered
+                    </p>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- Pending -->
+
+            <div class="stat-card">
+
+                <div class="stat-icon">
+                    ⏳
+                </div>
+
+                <div>
+
+                    <h3 id="pendingDoubts">
+                        0
+                    </h3>
+
+                    <p>
+                        Pending
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =========================================
+             DASHBOARD CONTENT
+        ========================================== -->
+
+        <section class="dashboard-content">
+
+
+            <!-- =====================================
+                 QUICK ACTIONS
+            ====================================== -->
+
+            <div class="dashboard-card">
+
+                <h2>
+                    Quick Actions
+                </h2>
+
+                <p>
+                    Manage your doubts easily.
+                </p>
+
+
+                <div class="quick-actions">
+
+
+                    <!-- Ask Doubt -->
+
+                    <a href="ask-doubt.html" class="quick-action">
+
+                        <span>
+                            ?
+                        </span>
+
+                        <div>
+
+                            <h3>
+                                Ask a Doubt
+                            </h3>
+
+                            <p>
+                                Submit a new question
+                            </p>
+
+                        </div>
+
+                    </a>
+
+
+
+                    <!-- My Doubts -->
+
+                    <a href="my-doubts.html" class="quick-action">
+
+                        <span>
+                            📋
+                        </span>
+
+                        <div>
+
+                            <h3>
+                                My Doubts
+                            </h3>
+
+                            <p>
+                                View your submitted doubts
+                            </p>
+
+                        </div>
+
+                    </a>
+
+
+
+                    <!-- Feedback -->
+
+                    <a href="#" class="quick-action">
+
+                        <span>
+                            ⭐
+                        </span>
+
+                        <div>
+
+                            <h3>
+                                Give Feedback
+                            </h3>
+
+                            <p>
+                                Share your experience
+                            </p>
+
+                        </div>
+
+                    </a>
+
+                </div>
+
+            </div>
+
+
+
+            <!-- =====================================
+                 RECENT DOUBTS
+            ====================================== -->
+
+            <div class="dashboard-card">
+
+
+                <div class="card-heading">
+
+                    <div>
+
+                        <h2>
+                            Recent Doubts
+                        </h2>
+
+                        <p>
+                            Your latest submitted questions
+                        </p>
+
+                    </div>
+
+
+                    <a href="#">
+                        View All
+                    </a>
+
+                </div>
+
+
+                <!-- JavaScript will put doubts here -->
+
+                <div id="recentDoubts"></div>
+
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+
+    <!-- =========================================
+         FOOTER
+    ========================================== -->
+
+    <footer class="dashboard-footer">
+
+        <p>
+            © 2026 Student Doubt Management System
+        </p>
+
+    </footer>
+
+
+
+    <!-- =========================================
+         DASHBOARD JAVASCRIPT
+    ========================================== -->
+
+    <script>
+
+        /* =========================================
+           GET LOGGED-IN USER
+        ========================================== */
+
+        const loggedInUser =
+            JSON.parse(
+                localStorage.getItem("sdLoggedInUser")
+            );
+
+
+        /* =========================================
+           CHECK LOGIN
+        ========================================== */
+
+        if (!loggedInUser) {
+
+            window.location.href = "login.html";
+
+        }
+
+
+        /* =========================================
+           LOAD USER DATA
+        ========================================== */
+
+        if (loggedInUser) {
+
+
+            /* -------------------------------------
+               USER NAME
+            ------------------------------------- */
+
+            document.getElementById("welcomeMessage").textContent =
+                "Welcome back, " + loggedInUser.name + "! 👋";
+
+
+            document.getElementById("dashboardUserName").textContent =
+                loggedInUser.name;
+
+
+
+            /* -------------------------------------
+               USER BRANCH
+            ------------------------------------- */
+
+            document.getElementById("userBranch").textContent =
+                loggedInUser.branch;
+
+
+
+            /* =====================================
+               GET ALL DOUBTS
+            ====================================== */
+
+            const allDoubts =
+                JSON.parse(
+                    localStorage.getItem("sdDoubts")
+                ) || [];
+
+
+
+            /* =====================================
+               GET ONLY LOGGED-IN USER'S DOUBTS
+            ====================================== */
+
+            const userDoubts =
+                allDoubts.filter(function(doubt) {
+
+                    return doubt.userEmail === loggedInUser.email;
+
+                });
+
+
+
+            /* =====================================
+               COUNT TOTAL DOUBTS
+            ====================================== */
+
+            const totalDoubts =
+                userDoubts.length;
+
+
+
+            /* =====================================
+               COUNT ANSWERED DOUBTS
+            ====================================== */
+
+            const answeredDoubts =
+                userDoubts.filter(function(doubt) {
+
+                    return doubt.status === "Answered";
+
+                }).length;
+
+
+
+            /* =====================================
+               COUNT PENDING DOUBTS
+            ====================================== */
+
+            const pendingDoubts =
+                userDoubts.filter(function(doubt) {
+
+                    return doubt.status === "Pending";
+
+                }).length;
+
+
+
+            /* =====================================
+               DISPLAY COUNTS
+            ====================================== */
+
+            document.getElementById("totalDoubts").textContent =
+                totalDoubts;
+
+
+            document.getElementById("answeredDoubts").textContent =
+                answeredDoubts;
+
+
+            document.getElementById("pendingDoubts").textContent =
+                pendingDoubts;
+
+
+
+            /* =====================================
+               RECENT DOUBTS
+            ====================================== */
+
+            const recentDoubts =
+                document.getElementById("recentDoubts");
+
+
+
+            /* -------------------------------------
+               NO DOUBTS
+            ------------------------------------- */
+
+            if (userDoubts.length === 0) {
+
+                recentDoubts.innerHTML = `
+                    
+                    <div class="doubt-item">
+
+                        <div class="doubt-info">
+
+                            <h3>
+                                No doubts submitted yet
+                            </h3>
+
+                            <p>
+                                Your submitted doubts will appear here.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                `;
+
+            }
+
+
+
+            /* -------------------------------------
+               SHOW DOUBTS
+            ------------------------------------- */
+
+            else {
+
+
+                /* Show latest 3 doubts */
+
+                const latestDoubts =
+                    userDoubts
+                    .slice(-3)
+                    .reverse();
+
+
+
+                latestDoubts.forEach(function(doubt) {
+
+
+                    /* Status class */
+
+                    let statusClass =
+                        "pending";
+
+
+                    if (doubt.status === "Answered") {
+
+                        statusClass =
+                            "answered";
+
+                    }
+
+
+
+                    /* Student name */
+
+                    let studentName =
+                        doubt.studentName;
+
+
+                    if (doubt.anonymous) {
+
+                        studentName =
+                            "Anonymous Student";
+
+                    }
+
+
+
+                    /* Add doubt to page */
+
+                    recentDoubts.innerHTML += `
+
+                        <div class="doubt-item">
+
+                            <div class="doubt-info">
+
+                                <h3>
+                                    ${doubt.subject}
+                                </h3>
+
+                                <p>
+                                    ${doubt.doubt}
+                                </p>
+
+                                <p style="margin-top: 5px; font-size: 12px;">
+                                    Asked by: ${studentName}
+                                </p>
+
+                            </div>
+
+
+                            <span class="status ${statusClass}">
+                                ${doubt.status}
+                            </span>
+
+                        </div>
+
+                    `;
+
+                });
+
+            }
+
+        }
+
+
+
+        /* =========================================
+           LOGOUT
+        ========================================== */
+
+        document
+            .getElementById("logoutLink")
+            .addEventListener("click", function() {
+
+                localStorage.removeItem("sdLoggedInUser");
+
+            });
+
+    </script>
+
+
+</body>
+
+</html>

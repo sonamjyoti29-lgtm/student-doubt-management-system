@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Register - Student Doubt System</title>
+
+    <link rel="stylesheet" href="css/style.css">
+
+</head>
+
+
+<body>
+
+
+    <div class="auth-page">
+
+
+        <div class="auth-container">
+
+
+            <div class="auth-header">
+
+
+                <div
+                    class="logo"
+                    style="justify-content: center; margin-bottom: 20px;"
+                >
+
+                    <span>
+                        SD
+                    </span>
+
+                </div>
+
+
+                <h1>
+                    Create Account
+                </h1>
+
+
+                <p>
+                    Join Student Doubt System today
+                </p>
+
+
+            </div>
+
+
+
+            <form
+                class="auth-form"
+                id="registerForm"
+            >
+
+
+                <!-- Full Name -->
+
+                <div class="form-group">
+
+                    <label for="name">
+                        Full Name
+                    </label>
+
+                    <input
+                        type="text"
+                        id="name"
+                        placeholder="Enter your full name"
+                        required
+                    >
+
+                </div>
+
+
+
+                <!-- Email -->
+
+                <div class="form-group">
+
+                    <label for="registerEmail">
+                        Email Address
+                    </label>
+
+                    <input
+                        type="email"
+                        id="registerEmail"
+                        placeholder="Enter your email"
+                        required
+                    >
+
+                </div>
+
+
+
+                <!-- Account Type -->
+
+                <div class="form-group">
+
+                    <label for="accountType">
+                        Account Type
+                    </label>
+
+                    <select
+                        id="accountType"
+                        required
+                    >
+
+                        <option value="">
+                            Select Account Type
+                        </option>
+
+                        <option value="student">
+                            Student
+                        </option>
+
+                        <option value="teacher">
+                            Teacher
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+
+                <!-- Student Branch -->
+
+                <div
+                    class="form-group"
+                    id="branchGroup"
+                >
+
+                    <label for="branch">
+                        Branch
+                    </label>
+
+                    <select id="branch">
+
+                        <option value="">
+                            Select Branch
+                        </option>
+
+                        <option value="CSE">
+                            Computer Science Engineering
+                        </option>
+
+                        <option value="IT">
+                            Information Technology
+                        </option>
+
+                        <option value="ECE">
+                            Electronics and Communication
+                        </option>
+
+                        <option value="Other">
+                            Other
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+
+                <!-- Teacher Subject -->
+
+                <div
+                    class="form-group"
+                    id="subjectGroup"
+                    style="display: none;"
+                >
+
+                    <label for="subject">
+                        Teaching Subject
+                    </label>
+
+                    <select id="subject">
+
+                        <option value="">
+                            Select Teaching Subject
+                        </option>
+
+                        <option value="Data Structures">
+                            Data Structures
+                        </option>
+
+                        <option value="Database Management">
+                            Database Management
+                        </option>
+
+                        <option value="Java Programming">
+                            Java Programming
+                        </option>
+
+                        <option value="Mathematics">
+                            Mathematics
+                        </option>
+
+                        <option value="Computer Networks">
+                            Computer Networks
+                        </option>
+
+                        <option value="Other">
+                            Other
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+
+                <!-- Password -->
+
+                <div class="form-group">
+
+                    <label for="registerPassword">
+                        Password
+                    </label>
+
+                    <input
+                        type="password"
+                        id="registerPassword"
+                        placeholder="Create a password"
+                        required
+                    >
+
+                </div>
+
+
+
+                <!-- Confirm Password -->
+
+                <div class="form-group">
+
+                    <label for="confirmPassword">
+                        Confirm Password
+                    </label>
+
+                    <input
+                        type="password"
+                        id="confirmPassword"
+                        placeholder="Confirm your password"
+                        required
+                    >
+
+                </div>
+
+
+
+                <!-- Submit -->
+
+                <button
+                    type="submit"
+                    class="auth-button"
+                >
+
+                    Create Account
+
+                </button>
+
+
+            </form>
+
+
+
+            <div class="auth-footer">
+
+                Already have an account?
+
+                <a href="login.html">
+                    Login
+                </a>
+
+            </div>
+
+
+
+            <a
+                href="index.html"
+                class="back-home"
+            >
+
+                ← Back to Home
+
+            </a>
+
+
+        </div>
+
+
+    </div>
+
+
+
+    <script src="js/script.js"></script>
+
+
+    <script>
+
+
+        const accountType =
+            document.getElementById("accountType");
+
+
+        const branchGroup =
+            document.getElementById("branchGroup");
+
+
+        const subjectGroup =
+            document.getElementById("subjectGroup");
+
+
+        const branch =
+            document.getElementById("branch");
+
+
+        const subject =
+            document.getElementById("subject");
+
+
+
+        accountType.addEventListener(
+            "change",
+            function() {
+
+
+                if (accountType.value === "teacher") {
+
+
+                    /* Show Teaching Subject */
+
+                    subjectGroup.style.display = "flex";
+
+
+                    /* Hide Branch */
+
+                    branchGroup.style.display = "none";
+
+
+                    /* Teacher must select subject */
+
+                    subject.required = true;
+
+
+                    /* Branch is not required for teacher */
+
+                    branch.required = false;
+
+
+                }
+
+
+                else if (accountType.value === "student") {
+
+
+                    /* Show Branch */
+
+                    branchGroup.style.display = "flex";
+
+
+                    /* Hide Teaching Subject */
+
+                    subjectGroup.style.display = "none";
+
+
+                    /* Student must select branch */
+
+                    branch.required = true;
+
+
+                    /* Subject is not required for student */
+
+                    subject.required = false;
+
+
+                }
+
+
+                else {
+
+
+                    branchGroup.style.display = "flex";
+
+
+                    subjectGroup.style.display = "none";
+
+
+                    branch.required = false;
+
+
+                    subject.required = false;
+
+
+                }
+
+
+            }
+
+        );
+
+
+    </script>
+
+
+</body>
+
+</html>
